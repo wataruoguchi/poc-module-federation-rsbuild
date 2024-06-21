@@ -1,27 +1,27 @@
-// rsbuild.config.ts
 import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 import { defineConfig } from "@rsbuild/core";
 import { pluginReact } from "@rsbuild/plugin-react";
 
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 3001,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    },
   },
   dev: {
     // It is necessary to configure assetPrefix, and in the production environment, you need to configure output.assetPrefix
-    assetPrefix: "http://localhost:3000",
+    assetPrefix: "http://localhost:3001",
   },
   tools: {
     rspack: (config, { appendPlugins }) => {
-      // You need to set a unique value that is not equal to other applications
-      config.output!.uniqueName = "app_shell";
+      config.output!.uniqueName = "team_red";
       appendPlugins([
         new ModuleFederationPlugin({
-          name: "app_shell",
-          remotes: {
-            team_red: "team_red@http://localhost:3001/mf-manifest.json",
-            team_green: "team_green@http://localhost:3002/mf-manifest.json",
-            team_blue: "team_blue@http://localhost:3003/mf-manifest.json",
+          name: "team_red",
+          exposes: {
+            "./Page": "./src/Page.tsx",
           },
           shared: ["react", "react-dom"],
         }),
